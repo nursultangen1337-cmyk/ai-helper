@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>AI Репетитор</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>AI Репетитор</h1>
+      <p>Я не кажу відповіді — я підкажу, як дійти самому!</p>
+    </header>
+
+    <main class="chat-container">
+      <div id="chat" class="chat"></div>
+      <div id="loading" class="loading hidden">Думаю...</div>
+
+      <div class="input-area">
+        <div id="photo-preview" class="photo-preview hidden">
+          <img id="photo-img" alt="Фото">
+          <button type="button" id="clear-photo" class="btn-icon" aria-label="Прибрати фото">×</button>
+        </div>
+
+        <div class="input-row">
+          <input type="text" id="message" placeholder="Питання або що незрозуміло..." autocomplete="off">
+          <div class="buttons">
+            <button type="button" id="camera" class="btn-icon" title="Камера">📷</button>
+            <button type="button" id="upload" class="btn-icon" title="Галерея">🖼️</button>
+            <button type="button" id="voice" class="btn-icon" title="Голос">🎤</button>
+            <button type="button" id="send" class="btn-send" title="Надіслати">→</button>
+          </div>
+        </div>
+        <input type="file" id="file-input" accept="image/*" capture="environment" hidden>
+      </div>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
