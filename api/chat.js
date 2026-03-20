@@ -78,7 +78,8 @@ export default async function handler(req, res) {
 
   const body = {
     contents,
-    systemInstruction: {
+    system_instruction: {
+      role: 'user',
       parts: [{ text: SYSTEM_PROMPT }],
     },
     generationConfig: {
