@@ -84,7 +84,7 @@ export default async function handler(req, res) {
         'X-Title': 'AI Repetitor',
       },
       body: JSON.stringify({
-        model: 'google/gemini-2.0-flash-exp:free',
+        model: 'google/gemini-2.5-pro-exp-03-25:free',
         messages,
         temperature: 0.7,
         max_tokens: 500,
