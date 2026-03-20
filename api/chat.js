@@ -81,7 +81,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`,
         'HTTP-Referer': 'https://ai-helper-alpha.vercel.app',
-        'X-Title': 'AI Репетитор',
+        'X-Title': 'AI Repetitor',
       },
       body: JSON.stringify({
         model: 'google/gemini-2.0-flash-exp:free',
