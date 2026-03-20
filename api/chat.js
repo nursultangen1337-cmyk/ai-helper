@@ -1,5 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
 const rateLimit = new Map();
 
 function checkRateLimit(ip) {
@@ -35,7 +33,7 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    return res.status(500).json({ error: 'API ключ не налаштований. Зверніться до адміністратора.' });
+    return res.status(500).json({ error: 'API ключ не налаштований.' });
   }
 
   const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
@@ -53,51 +51,63 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Повідомлення занадто довге (макс. 2000 символів)' });
   }
 
-  if (imageBase64 && imageBase64.length > 5_500_000) {
-    return res.status(400).json({ error: 'Зображення занадто велике' });
+  // Build conversation contents for Gemini API
+  const contents = [];
+
+  const recentHistory = Array.isArray(history) ? history.slice(-10) : [];
+  for (const entry of recentHistory) {
+    if (entry.user) {
+      contents.push({ role: 'user', parts: [{ text: entry.user }] });
+    }
+    if (entry.assistant) {
+      contents.push({ role: 'model', parts: [{ text: entry.assistant }] });
+    }
   }
 
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
-    const chatHistory = [];
-    const recentHistory = Array.isArray(history) ? history.slice(-10) : [];
-    for (const entry of recentHistory) {
-      if (entry.user) {
-        chatHistory.push({ role: 'user', parts: [{ text: entry.user }] });
-      }
-      if (entry.assistant) {
-        chatHistory.push({ role: 'model', parts: [{ text: entry.assistant }] });
-      }
-    }
-
-    const chat = model.startChat({
-      history: chatHistory,
-      systemInstruction: SYSTEM_PROMPT,
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 500,
+  // Current message
+  const parts = [{ text: message }];
+  if (imageBase64) {
+    parts.push({
+      inlineData: {
+        mimeType: 'image/jpeg',
+        data: imageBase64,
       },
     });
+  }
+  contents.push({ role: 'user', parts });
 
-    const parts = [{ text: message }];
+  const body = {
+    contents,
+    system_instruction: {
+      role: 'user',
+      parts: [{ text: SYSTEM_PROMPT }],
+    },
+    generationConfig: {
+      temperature: 0.7,
+      maxOutputTokens: 500,
+    },
+  };
 
-    if (imageBase64) {
-      parts.push({
-        inlineData: {
-          mimeType: 'image/jpeg',
-          data: imageBase64,
-        },
-      });
+  try {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error('Gemini API error:', JSON.stringify(data));
+      return res.status(500).json({ error: data.error?.message || 'Помилка Gemini API' });
     }
 
-    const result = await chat.sendMessage(parts);
-    const hint = result.response.text() || 'Щось пішло не так. Спробуй ще раз!';
-
+    const hint = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Щось пішло не так. Спробуй ще раз!';
     return res.status(200).json({ hint });
   } catch (err) {
-    console.error('Gemini error:', err.message);
+    console.error('Fetch error:', err.message);
     return res.status(500).json({ error: 'Не вдалося отримати відповідь. Спробуй пізніше.' });
   }
 }
