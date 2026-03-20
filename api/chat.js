@@ -1,11 +1,11 @@
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const rateLimit = new Map();
 
 function checkRateLimit(ip) {
   const now = Date.now();
   const windowMs = 60_000;
-  const maxRequests = 20;
+  const maxRequests = 15;
 
   const entry = rateLimit.get(ip);
   if (!entry || now - entry.start > windowMs) {
@@ -16,12 +16,24 @@ function checkRateLimit(ip) {
   return entry.count <= maxRequests;
 }
 
+const SYSTEM_PROMPT = `Ти — AI-репетитор з математики для учнів 3 класу. Тебе звати Репетик.
+Правила:
+- НІКОЛИ не давай готову відповідь. Давай підказки, щоб учень дійшов сам.
+- Якщо учень написав відповідь — перевір і скажи правильно чи ні. Якщо ні — підкажи де помилка.
+- Використовуй просту мову для дитини 8-9 років.
+- Будь доброзичливим та підтримуючим. Хвали за спроби.
+- Відповідай тільки на теми математики 3 класу (додавання, віднімання, множення, ділення, задачі).
+- Якщо питання не про математику — ввічливо поверни до теми.
+- Відповідай українською мовою.
+- Якщо надіслано фото задачі — прочитай її і допоможи розібратися.
+- Відповідай коротко — 2-4 речення максимум.`;
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Метод не дозволений' });
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: 'API ключ не налаштований. Зверніться до адміністратора.' });
   }
@@ -45,58 +57,47 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Зображення занадто велике' });
   }
 
-  const systemMessage = {
-    role: 'system',
-    content: `Ти — AI-репетитор з математики для учнів 3 класу. Тебе звати Репетик.
-Правила:
-- НІКОЛИ не давай готову відповідь. Давай підказки, щоб учень дійшов сам.
-- Якщо учень написав відповідь — перевір і скажи правильно чи ні. Якщо ні — підкажи де помилка.
-- Використовуй просту мову для дитини 8-9 років.
-- Будь доброзичливим та підтримуючим. Хвали за спроби.
-- Відповідай тільки на теми математики 3 класу (додавання, віднімання, множення, ділення, задачі).
-- Якщо питання не про математику — ввічливо поверни до теми.
-- Відповідай українською мовою.
-- Якщо надіслано фото задачі — прочитай її і допоможи розібратися.
-- Відповідай коротко — 2-4 речення максимум.`
-  };
-
-  const messages = [systemMessage];
-
-  const recentHistory = Array.isArray(history) ? history.slice(-10) : [];
-  for (const entry of recentHistory) {
-    if (entry.user) messages.push({ role: 'user', content: entry.user });
-    if (entry.assistant) messages.push({ role: 'assistant', content: entry.assistant });
-  }
-
-  if (imageBase64) {
-    messages.push({
-      role: 'user',
-      content: [
-        { type: 'text', text: message },
-        {
-          type: 'image_url',
-          image_url: { url: `data:image/jpeg;base64,${imageBase64}`, detail: 'low' }
-        }
-      ]
-    });
-  } else {
-    messages.push({ role: 'user', content: message });
-  }
-
   try {
-    const openai = new OpenAI({ apiKey });
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages,
-      temperature: 0.7,
-      max_tokens: 500,
+    const chatHistory = [];
+    const recentHistory = Array.isArray(history) ? history.slice(-10) : [];
+    for (const entry of recentHistory) {
+      if (entry.user) {
+        chatHistory.push({ role: 'user', parts: [{ text: entry.user }] });
+      }
+      if (entry.assistant) {
+        chatHistory.push({ role: 'model', parts: [{ text: entry.assistant }] });
+      }
+    }
+
+    const chat = model.startChat({
+      history: chatHistory,
+      systemInstruction: SYSTEM_PROMPT,
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 500,
+      },
     });
 
-    const hint = completion.choices[0]?.message?.content || 'Щось пішло не так. Спробуй ще раз!';
+    const parts = [{ text: message }];
+
+    if (imageBase64) {
+      parts.push({
+        inlineData: {
+          mimeType: 'image/jpeg',
+          data: imageBase64,
+        },
+      });
+    }
+
+    const result = await chat.sendMessage(parts);
+    const hint = result.response.text() || 'Щось пішло не так. Спробуй ще раз!';
+
     return res.status(200).json({ hint });
   } catch (err) {
-    console.error('OpenAI error:', err.message);
+    console.error('Gemini error:', err.message);
     return res.status(500).json({ error: 'Не вдалося отримати відповідь. Спробуй пізніше.' });
   }
 }
