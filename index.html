@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>AI Репетитор</title>
+  <meta name="theme-color" content="#6750a4">
+  <title>AI Репетитор — Репетик</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="app">
     <header>
-      <h1>AI Репетитор</h1>
-      <p>Я не кажу відповіді — я підкажу, як дійти самому!</p>
+      <button type="button" id="clear-chat" class="header-btn" aria-label="Очистити чат" title="Очистити чат">🗑️</button>
+      <div class="header-content">
+        <h1>AI Репетитор</h1>
+        <p>Я підкажу, як дійти до відповіді самому!</p>
+      </div>
+      <button type="button" id="theme-toggle" class="header-btn" aria-label="Змінити тему" title="Змінити тему">🌙</button>
     </header>
 
     <main class="chat-container">
@@ -19,17 +24,17 @@
 
       <div class="input-area">
         <div id="photo-preview" class="photo-preview hidden">
-          <img id="photo-img" alt="Фото">
+          <img id="photo-img" alt="Фото задачі">
           <button type="button" id="clear-photo" class="btn-icon" aria-label="Прибрати фото">×</button>
         </div>
 
         <div class="input-row">
           <input type="text" id="message" placeholder="Питання або що незрозуміло..." autocomplete="off">
           <div class="buttons">
-            <button type="button" id="camera" class="btn-icon" title="Камера">📷</button>
-            <button type="button" id="upload" class="btn-icon" title="Галерея">🖼️</button>
-            <button type="button" id="voice" class="btn-icon" title="Голос">🎤</button>
-            <button type="button" id="send" class="btn-send" title="Надіслати">→</button>
+            <button type="button" id="camera" class="btn-icon" title="Камера" aria-label="Зробити фото задачі">📷</button>
+            <button type="button" id="upload" class="btn-icon" title="Галерея" aria-label="Завантажити зображення">🖼️</button>
+            <button type="button" id="voice" class="btn-icon" title="Голос" aria-label="Голосовий ввід">🎤</button>
+            <button type="button" id="send" class="btn-send" title="Надіслати" aria-label="Надіслати повідомлення">→</button>
           </div>
         </div>
         <input type="file" id="file-input" accept="image/*" capture="environment" hidden>
