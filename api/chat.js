@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Метод не дозволений' });
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: 'API ключ не налаштований.' });
   }
@@ -51,60 +51,54 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Повідомлення занадто довге (макс. 2000 символів)' });
   }
 
-  // Build conversation contents for Gemini API
-  const contents = [];
+  const messages = [{ role: 'system', content: SYSTEM_PROMPT }];
 
   const recentHistory = Array.isArray(history) ? history.slice(-10) : [];
   for (const entry of recentHistory) {
-    if (entry.user) {
-      contents.push({ role: 'user', parts: [{ text: entry.user }] });
-    }
-    if (entry.assistant) {
-      contents.push({ role: 'model', parts: [{ text: entry.assistant }] });
-    }
+    if (entry.user) messages.push({ role: 'user', content: entry.user });
+    if (entry.assistant) messages.push({ role: 'assistant', content: entry.assistant });
   }
 
-  // Current message
-  const parts = [{ text: message }];
   if (imageBase64) {
-    parts.push({
-      inlineData: {
-        mimeType: 'image/jpeg',
-        data: imageBase64,
-      },
-    });
-  }
-  contents.push({ role: 'user', parts });
-
-  const body = {
-    contents,
-    system_instruction: {
+    messages.push({
       role: 'user',
-      parts: [{ text: SYSTEM_PROMPT }],
-    },
-    generationConfig: {
-      temperature: 0.7,
-      maxOutputTokens: 500,
-    },
-  };
+      content: [
+        { type: 'text', text: message },
+        {
+          type: 'image_url',
+          image_url: { url: `data:image/jpeg;base64,${imageBase64}` }
+        }
+      ]
+    });
+  } else {
+    messages.push({ role: 'user', content: message });
+  }
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
-    const response = await fetch(url, {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`,
+        'HTTP-Referer': 'https://ai-helper-alpha.vercel.app',
+        'X-Title': 'AI Репетитор',
+      },
+      body: JSON.stringify({
+        model: 'google/gemini-2.0-flash-exp:free',
+        messages,
+        temperature: 0.7,
+        max_tokens: 500,
+      }),
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('Gemini API error:', JSON.stringify(data));
-      return res.status(500).json({ error: data.error?.message || 'Помилка Gemini API' });
+      console.error('OpenRouter error:', JSON.stringify(data));
+      return res.status(500).json({ error: data.error?.message || 'Помилка API' });
     }
 
-    const hint = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Щось пішло не так. Спробуй ще раз!';
+    const hint = data.choices?.[0]?.message?.content || 'Щось пішло не так. Спробуй ще раз!';
     return res.status(200).json({ hint });
   } catch (err) {
     console.error('Fetch error:', err.message);
