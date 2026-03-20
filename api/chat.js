@@ -1,5 +1,12 @@
 const rateLimit = new Map();
 
+const FREE_MODELS = [
+  'nousresearch/hermes-3-llama-3.1-405b:free',
+  'google/gemma-3-12b-it:free',
+  'google/gemma-3-4b-it:free',
+  'google/gemma-3n-e4b-it:free',
+];
+
 function checkRateLimit(ip) {
   const now = Date.now();
   const windowMs = 60_000;
@@ -25,6 +32,37 @@ const SYSTEM_PROMPT = `Ти — AI-репетитор з математики д
 - Відповідай українською мовою.
 - Якщо надіслано фото задачі — прочитай її і допоможи розібратися.
 - Відповідай коротко — 2-4 речення максимум.`;
+
+async function callModel(model, messages, apiKey) {
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+      'HTTP-Referer': 'https://ai-helper-alpha.vercel.app',
+      'X-Title': 'AI Repetitor',
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      temperature: 0.7,
+      max_tokens: 500,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error?.message || `${model} returned ${response.status}`);
+  }
+
+  const text = data.choices?.[0]?.message?.content;
+  if (!text) {
+    throw new Error('Empty response');
+  }
+
+  return text;
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -74,34 +112,16 @@ export default async function handler(req, res) {
     messages.push({ role: 'user', content: message });
   }
 
-  try {
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': 'https://ai-helper-alpha.vercel.app',
-        'X-Title': 'AI Repetitor',
-      },
-      body: JSON.stringify({
-        model: 'google/gemma-3-12b-it:free',
-        messages,
-        temperature: 0.7,
-        max_tokens: 500,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error('OpenRouter error:', JSON.stringify(data));
-      return res.status(500).json({ error: data.error?.message || 'Помилка API' });
+  // Try each model, fallback to next on failure
+  for (const model of FREE_MODELS) {
+    try {
+      const hint = await callModel(model, messages, apiKey);
+      return res.status(200).json({ hint });
+    } catch (err) {
+      console.error(`Model ${model} failed:`, err.message);
+      continue;
     }
-
-    const hint = data.choices?.[0]?.message?.content || 'Щось пішло не так. Спробуй ще раз!';
-    return res.status(200).json({ hint });
-  } catch (err) {
-    console.error('Fetch error:', err.message);
-    return res.status(500).json({ error: 'Не вдалося отримати відповідь. Спробуй пізніше.' });
   }
+
+  return res.status(500).json({ error: 'Всі моделі зайняті. Спробуй через хвилину.' });
 }
