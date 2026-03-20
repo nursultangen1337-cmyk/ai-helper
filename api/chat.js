@@ -84,7 +84,7 @@ export default async function handler(req, res) {
         'X-Title': 'AI Repetitor',
       },
       body: JSON.stringify({
-        model: 'meta-llama/llama-4-maverick:free',
+        model: 'google/gemma-3-12b-it:free',
         messages,
         temperature: 0.7,
         max_tokens: 500,
