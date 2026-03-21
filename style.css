@@ -36,26 +36,27 @@
   --error-text: #ff8a80;
 }
 
-html, body {
+html {
   height: 100%;
-  overflow: hidden;
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg);
   color: var(--text);
-  -webkit-tap-highlight-color: transparent;
+  height: 100%;
+  margin: 0;
+  -webkit-tap-highlight-color: rgba(0,0,0,0.1);
   transition: background 0.3s, color 0.3s;
 }
 
 .app {
   max-width: 600px;
   margin: 0 auto;
-  height: var(--vh, 100vh);
+  height: 100%;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 /* Header */
@@ -63,10 +64,9 @@ body {
 header {
   background: linear-gradient(135deg, #6750a4, #9c7cf4);
   color: white;
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1rem;
   text-align: center;
-  position: sticky;
-  top: 0;
+  flex-shrink: 0;
   z-index: 10;
   display: flex;
   align-items: center;
@@ -90,8 +90,8 @@ header p {
 }
 
 .header-btn {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border: none;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
@@ -102,15 +102,11 @@ header p {
   justify-content: center;
   color: white;
   transition: background 0.2s;
-  touch-action: manipulation;
-}
-
-.header-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  -webkit-tap-highlight-color: rgba(255,255,255,0.3);
 }
 
 .header-btn:active {
-  transform: scale(0.95);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 /* Chat */
@@ -119,8 +115,6 @@ header p {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 1rem;
-  padding-bottom: 0;
   min-height: 0;
   overflow: hidden;
 }
@@ -128,8 +122,9 @@ header p {
 .chat {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 1rem;
   -webkit-overflow-scrolling: touch;
+  padding: 1rem;
+  padding-bottom: 0.5rem;
 }
 
 /* Messages */
@@ -255,23 +250,19 @@ header p {
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 0.625rem 1rem;
+  padding: 0.75rem 1rem;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
   text-align: left;
-  touch-action: manipulation;
-}
-
-.example-prompt:hover {
-  background: var(--bot-msg);
+  -webkit-tap-highlight-color: rgba(0,0,0,0.1);
 }
 
 .example-prompt:active {
+  background: var(--bot-msg);
   transform: scale(0.98);
 }
 
-/* Loading (hidden, replaced by typing indicator) */
+/* Loading */
 
 .loading {
   color: var(--text-muted);
@@ -316,10 +307,10 @@ header p {
 
 .input-area {
   background: var(--card);
-  padding: 0.75rem;
-  border-radius: 16px 16px 0 0;
+  padding: 0.625rem;
+  flex-shrink: 0;
   box-shadow: 0 -2px 10px var(--shadow);
-  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(0.625rem + env(safe-area-inset-bottom, 0px));
 }
 
 .input-row {
@@ -331,14 +322,16 @@ header p {
 #message {
   flex: 1;
   min-width: 0;
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 0.875rem;
   border: 1px solid var(--border);
   border-radius: 24px;
-  font-size: 1rem;
+  font-size: 16px;
   outline: none;
   transition: border-color 0.2s;
   background: var(--bg);
   color: var(--text);
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 #message:focus {
@@ -356,8 +349,8 @@ header p {
 }
 
 .btn-icon {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border: none;
   background: var(--primary-light);
   border-radius: 50%;
@@ -366,29 +359,25 @@ header p {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, transform 0.1s;
-  touch-action: manipulation;
-  -webkit-user-select: none;
-  user-select: none;
   flex-shrink: 0;
-}
-
-.btn-icon:hover {
-  background: var(--bot-msg);
+  -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .btn-icon:active {
-  transform: scale(0.95);
+  background: var(--bot-msg);
+  transform: scale(0.92);
 }
 
 .btn-icon:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .btn-send {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border: none;
   background: var(--primary);
   color: white;
@@ -398,24 +387,20 @@ header p {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, transform 0.1s;
-  touch-action: manipulation;
-  -webkit-user-select: none;
-  user-select: none;
   flex-shrink: 0;
-}
-
-.btn-send:hover {
-  background: var(--primary-dark);
+  -webkit-tap-highlight-color: rgba(103,80,164,0.3);
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .btn-send:active {
-  transform: scale(0.95);
+  background: var(--primary-dark);
+  transform: scale(0.92);
 }
 
 .btn-send:disabled {
   opacity: 0.5;
-  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .btn-send.sending {
@@ -464,44 +449,47 @@ header p {
   font-size: 0.8rem;
   cursor: pointer;
   white-space: nowrap;
-  transition: opacity 0.2s;
 }
 
-.retry-btn:hover {
+.retry-btn:active {
   opacity: 0.85;
+}
+
+/* JS error banner */
+
+.js-error {
+  background: #ff4444;
+  color: white;
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 /* Small screens */
 
-@media (max-width: 400px) {
+@media (max-width: 380px) {
   .buttons {
-    gap: 0.125rem;
+    gap: 0.1rem;
   }
 
   .btn-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 1rem;
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
   }
 
   .btn-send {
-    width: 36px;
-    height: 36px;
-    font-size: 1rem;
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
   }
 
   #message {
-    padding: 0.625rem 0.75rem;
-    font-size: 0.9375rem;
-  }
-
-  .input-area {
-    padding: 0.5rem;
-    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
-  }
-
-  .chat-container {
-    padding: 0.5rem;
-    padding-bottom: 0;
+    padding: 0.5rem 0.75rem;
   }
 }
