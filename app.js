@@ -26,10 +26,24 @@ document.addEventListener('DOMContentLoaded', function() {
   var currentPhoto = null;
   var isSending = false;
 
+  // --- Safe localStorage ---
+
+  function storageGet(key) {
+    try { return localStorage.getItem(key); } catch (e) { return null; }
+  }
+
+  function storageSet(key, val) {
+    try { localStorage.setItem(key, val); } catch (e) {}
+  }
+
+  function storageRemove(key) {
+    try { localStorage.removeItem(key); } catch (e) {}
+  }
+
   // --- Theme ---
 
   function initTheme() {
-    var saved = localStorage.getItem('theme');
+    var saved = storageGet('theme');
     if (saved) {
       document.documentElement.dataset.theme = saved;
     } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -46,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
   themeToggle.onclick = function() {
     var isDark = document.documentElement.dataset.theme === 'dark';
     document.documentElement.dataset.theme = isDark ? 'light' : 'dark';
-    localStorage.setItem('theme', document.documentElement.dataset.theme);
+    storageSet('theme', document.documentElement.dataset.theme);
     updateThemeIcon();
   };
 
@@ -56,12 +70,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function saveHistory() {
     var trimmed = history.slice(-50);
-    localStorage.setItem('chat-history', JSON.stringify(trimmed));
+    storageSet('chat-history', JSON.stringify(trimmed));
   }
 
   function loadHistory() {
     try {
-      var saved = localStorage.getItem('chat-history');
+      var saved = storageGet('chat-history');
       if (!saved) return;
       history = JSON.parse(saved);
       for (var i = 0; i < history.length; i++) {
@@ -423,14 +437,14 @@ document.addEventListener('DOMContentLoaded', function() {
   clearChatBtn.onclick = function() {
     if (!confirm('Очистити всю розмову?')) return;
     history = [];
-    localStorage.removeItem('chat-history');
+    storageRemove('chat-history');
     chat.innerHTML = '';
     addWelcome();
   };
 
   // --- Init ---
 
-  var saved = localStorage.getItem('chat-history');
+  var saved = storageGet('chat-history');
   if (saved) {
     loadHistory();
   } else {
