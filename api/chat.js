@@ -1,11 +1,6 @@
-const rateLimit = new Map();
+import Anthropic from '@anthropic-ai/sdk';
 
-const FREE_MODELS = [
-  'nousresearch/hermes-3-llama-3.1-405b:free',
-  'google/gemma-3-12b-it:free',
-  'google/gemma-3-4b-it:free',
-  'google/gemma-3n-e4b-it:free',
-];
+const rateLimit = new Map();
 
 function checkRateLimit(ip) {
   const now = Date.now();
@@ -33,43 +28,12 @@ const SYSTEM_PROMPT = `Ти — AI-репетитор з математики д
 - Якщо надіслано фото задачі — прочитай її і допоможи розібратися.
 - Відповідай коротко — 2-4 речення максимум.`;
 
-async function callModel(model, messages, apiKey) {
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-      'HTTP-Referer': 'https://ai-helper-alpha.vercel.app',
-      'X-Title': 'AI Repetitor',
-    },
-    body: JSON.stringify({
-      model,
-      messages,
-      temperature: 0.7,
-      max_tokens: 500,
-    }),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.error?.message || `${model} returned ${response.status}`);
-  }
-
-  const text = data.choices?.[0]?.message?.content;
-  if (!text) {
-    throw new Error('Empty response');
-  }
-
-  return text;
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Метод не дозволений' });
   }
 
-  const apiKey = process.env.OPENROUTER_API_KEY;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return res.status(500).json({ error: 'API ключ не налаштований.' });
   }
@@ -89,7 +53,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Повідомлення занадто довге (макс. 2000 символів)' });
   }
 
-  const messages = [{ role: 'system', content: SYSTEM_PROMPT }];
+  const messages = [];
 
   const recentHistory = Array.isArray(history) ? history.slice(-10) : [];
   for (const entry of recentHistory) {
@@ -101,27 +65,39 @@ export default async function handler(req, res) {
     messages.push({
       role: 'user',
       content: [
-        { type: 'text', text: message },
         {
-          type: 'image_url',
-          image_url: { url: `data:image/jpeg;base64,${imageBase64}` }
-        }
-      ]
+          type: 'image',
+          source: {
+            type: 'base64',
+            media_type: 'image/jpeg',
+            data: imageBase64,
+          },
+        },
+        { type: 'text', text: message },
+      ],
     });
   } else {
     messages.push({ role: 'user', content: message });
   }
 
-  // Try each model, fallback to next on failure
-  for (const model of FREE_MODELS) {
-    try {
-      const hint = await callModel(model, messages, apiKey);
-      return res.status(200).json({ hint });
-    } catch (err) {
-      console.error(`Model ${model} failed:`, err.message);
-      continue;
-    }
-  }
+  try {
+    const client = new Anthropic({ apiKey });
 
-  return res.status(500).json({ error: 'Всі моделі зайняті. Спробуй через хвилину.' });
+    const response = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 500,
+      system: SYSTEM_PROMPT,
+      messages,
+    });
+
+    const hint = response.content[0]?.text;
+    if (!hint) {
+      return res.status(500).json({ error: 'Порожня відповідь від моделі.' });
+    }
+
+    return res.status(200).json({ hint });
+  } catch (err) {
+    console.error('Claude API error:', err.message);
+    return res.status(500).json({ error: 'Помилка сервера. Спробуй ще раз.' });
+  }
 }
