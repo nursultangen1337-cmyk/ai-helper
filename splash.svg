@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" width="1080" height="1920">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.25)"/>
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0.08)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1080" height="1920" fill="url(#bg)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="150" cy="300" r="200" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="930" cy="1600" r="250" fill="rgba(255,255,255,0.05)"/>
+  <circle cx="800" cy="400" r="120" fill="rgba(255,255,255,0.04)"/>
+  <circle cx="200" cy="1400" r="160" fill="rgba(255,255,255,0.04)"/>
+
+  <!-- Main icon circle -->
+  <circle cx="540" cy="750" r="180" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
+
+  <!-- Robot face -->
+  <!-- Head -->
+  <rect x="460" y="680" width="160" height="130" rx="25" fill="white"/>
+  <!-- Eyes -->
+  <circle cx="500" cy="730" r="18" fill="#667eea"/>
+  <circle cx="580" cy="730" r="18" fill="#667eea"/>
+  <!-- Eye shine -->
+  <circle cx="506" cy="724" r="6" fill="white"/>
+  <circle cx="586" cy="724" r="6" fill="white"/>
+  <!-- Smile -->
+  <path d="M 500 770 Q 540 800 580 770" stroke="#667eea" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <!-- Antenna -->
+  <line x1="540" y1="680" x2="540" y2="645" stroke="white" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="540" cy="638" r="10" fill="#ffd700"/>
+  <!-- Ears -->
+  <rect x="438" y="715" width="22" height="35" rx="8" fill="white"/>
+  <rect x="620" y="715" width="22" height="35" rx="8" fill="white"/>
+
+  <!-- Math symbols floating around -->
+  <text x="380" y="660" font-family="Arial, sans-serif" font-size="48" fill="rgba(255,255,255,0.6)" font-weight="bold">+</text>
+  <text x="680" y="700" font-family="Arial, sans-serif" font-size="42" fill="rgba(255,255,255,0.5)" font-weight="bold">×</text>
+  <text x="350" y="830" font-family="Arial, sans-serif" font-size="40" fill="rgba(255,255,255,0.4)" font-weight="bold">÷</text>
+  <text x="710" y="850" font-family="Arial, sans-serif" font-size="44" fill="rgba(255,255,255,0.5)" font-weight="bold">−</text>
+  <text x="400" y="900" font-family="Arial, sans-serif" font-size="36" fill="rgba(255,255,255,0.35)" font-weight="bold">=</text>
+  <text x="660" y="640" font-family="Arial, sans-serif" font-size="38" fill="rgba(255,255,255,0.4)" font-weight="bold">%</text>
+
+  <!-- App name -->
+  <text x="540" y="1060" font-family="Arial, sans-serif" font-size="96" fill="white" font-weight="bold" text-anchor="middle">Репетик</text>
+
+  <!-- Subtitle -->
+  <text x="540" y="1130" font-family="Arial, sans-serif" font-size="36" fill="rgba(255,255,255,0.8)" text-anchor="middle">AI-репетитор з математики</text>
+
+  <!-- Tagline -->
+  <text x="540" y="1190" font-family="Arial, sans-serif" font-size="28" fill="rgba(255,255,255,0.55)" text-anchor="middle">Вчимося разом — крок за кроком!</text>
+
+  <!-- Bottom loading dots -->
+  <circle cx="500" cy="1700" r="10" fill="rgba(255,255,255,0.8)"/>
+  <circle cx="540" cy="1700" r="10" fill="rgba(255,255,255,0.5)"/>
+  <circle cx="580" cy="1700" r="10" fill="rgba(255,255,255,0.3)"/>
+</svg>
