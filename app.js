@@ -373,7 +373,15 @@ clearPhotoBtn.addEventListener('click', () => {
 
 // --- Send button ---
 
-sendBtn.addEventListener('click', sendMessage);
+sendBtn.addEventListener('click', (e) => {
+  e.preventDefault();
+  sendMessage();
+});
+
+sendBtn.addEventListener('touchend', (e) => {
+  e.preventDefault();
+  sendMessage();
+});
 
 messageInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
@@ -423,6 +431,22 @@ clearChatBtn.addEventListener('click', () => {
   chat.innerHTML = '';
   addWelcome();
 });
+
+// --- Mobile viewport fix (keyboard open/close) ---
+
+function setViewportHeight() {
+  const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+  document.documentElement.style.setProperty('--vh', vh + 'px');
+}
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', () => {
+    setViewportHeight();
+    setTimeout(() => chat.scrollTo({ top: chat.scrollHeight }), 100);
+  });
+}
+window.addEventListener('resize', setViewportHeight);
+setViewportHeight();
 
 // --- Init ---
 
