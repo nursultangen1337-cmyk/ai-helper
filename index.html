@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#6750a4">
   <title>AI Репетитор — Репетик</title>
   <link rel="stylesheet" href="style.css">
@@ -20,9 +20,8 @@
 
     <main class="chat-container">
       <div id="chat" class="chat"></div>
-      <div id="loading" class="loading hidden">Думаю...</div>
 
-      <div class="input-area">
+      <form id="chat-form" class="input-area" action="javascript:void(0)">
         <div id="photo-preview" class="photo-preview hidden">
           <img id="photo-img" alt="Фото задачі">
           <button type="button" id="clear-photo" class="btn-icon" aria-label="Прибрати фото">×</button>
@@ -34,11 +33,11 @@
             <button type="button" id="camera" class="btn-icon" title="Камера" aria-label="Зробити фото задачі">📷</button>
             <button type="button" id="upload" class="btn-icon" title="Галерея" aria-label="Завантажити зображення">🖼️</button>
             <button type="button" id="voice" class="btn-icon" title="Голос" aria-label="Голосовий ввід">🎤</button>
-            <button type="button" id="send" class="btn-send" title="Надіслати" aria-label="Надіслати повідомлення">→</button>
+            <button type="submit" id="send" class="btn-send" title="Надіслати" aria-label="Надіслати повідомлення">→</button>
           </div>
         </div>
         <input type="file" id="file-input" accept="image/*" capture="environment" hidden>
-      </div>
+      </form>
     </main>
   </div>
   <script src="app.js"></script>
