@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background with rounded corners -->
+  <rect width="512" height="512" rx="100" fill="url(#bg)"/>
+
+  <!-- Robot face -->
+  <rect x="156" y="195" width="200" height="160" rx="35" fill="white"/>
+  <circle cx="220" cy="260" r="25" fill="#667eea"/>
+  <circle cx="320" cy="260" r="25" fill="#667eea"/>
+  <circle cx="228" cy="252" r="8" fill="white"/>
+  <circle cx="328" cy="252" r="8" fill="white"/>
+  <path d="M 220 310 Q 270 350 320 310" stroke="#667eea" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <line x1="256" y1="195" x2="256" y2="148" stroke="white" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="256" cy="140" r="15" fill="#ffd700"/>
+  <rect x="128" y="240" width="28" height="45" rx="10" fill="white"/>
+  <rect x="356" y="240" width="28" height="45" rx="10" fill="white"/>
+
+  <!-- Book icon (top-right) -->
+  <g transform="translate(385, 135)" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0 5 Q15 0 30 5 L30 35 Q15 30 0 35 Z"/>
+    <path d="M30 5 Q45 0 60 5 L60 35 Q45 30 30 35 Z"/>
+  </g>
+
+  <!-- Ruler/triangle (top-left) -->
+  <g transform="translate(80, 145)" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="0,45 45,45 0,0"/>
+    <line x1="0" y1="33" x2="10" y2="33"/>
+    <line x1="0" y1="21" x2="10" y2="21"/>
+    <line x1="0" y1="10" x2="7" y2="10"/>
+  </g>
+
+  <!-- Globe (bottom-left) -->
+  <g transform="translate(75, 330)">
+    <circle cx="22" cy="22" r="22" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="3"/>
+    <ellipse cx="22" cy="22" rx="10" ry="22" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>
+    <line x1="0" y1="22" x2="44" y2="22" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>
+  </g>
+
+  <!-- Pencil (bottom-right) -->
+  <g transform="translate(400, 330)" fill="none" stroke="rgba(255,255,255,0.6)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="0" y1="40" x2="30" y2="0"/>
+    <line x1="30" y1="0" x2="40" y2="8"/>
+    <line x1="40" y1="8" x2="10" y2="48"/>
+    <line x1="10" y1="48" x2="0" y2="40"/>
+    <line x1="0" y1="40" x2="-4" y2="52"/>
+    <line x1="-4" y1="52" x2="10" y2="48"/>
+  </g>
+
+  <!-- App name below robot -->
+  <text x="256" y="430" font-family="Arial, sans-serif" font-size="56" fill="white" font-weight="bold" text-anchor="middle">Репетик</text>
+</svg>

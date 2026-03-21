@@ -74,7 +74,7 @@ function addWelcome() {
   div.appendChild(title);
 
   const desc = document.createElement('p');
-  desc.textContent = 'Сфотографуй задачу або напиши питання. Я підкажу, як дійти до відповіді!';
+  desc.textContent = 'Сфотографуй завдання або напиши питання з будь-якого предмету 3 класу!';
   div.appendChild(desc);
 
   const examples = document.createElement('div');
@@ -82,8 +82,8 @@ function addWelcome() {
 
   const prompts = [
     'Скільки буде 7 × 8?',
-    'Як ділити 56 на 7?',
-    'Допоможи розв\'язати задачу',
+    'Як пишеться слово "сонце"?',
+    'Розкажи про кругообіг води',
   ];
 
   for (const text of prompts) {
