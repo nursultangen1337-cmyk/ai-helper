@@ -4,10 +4,6 @@
       <stop offset="0%" style="stop-color:#667eea"/>
       <stop offset="100%" style="stop-color:#764ba2"/>
     </linearGradient>
-    <linearGradient id="card" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:rgba(255,255,255,0.25)"/>
-      <stop offset="100%" style="stop-color:rgba(255,255,255,0.08)"/>
-    </linearGradient>
   </defs>
 
   <!-- Background -->
@@ -23,36 +19,30 @@
   <circle cx="540" cy="750" r="180" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="3"/>
 
   <!-- Robot face -->
-  <!-- Head -->
   <rect x="460" y="680" width="160" height="130" rx="25" fill="white"/>
-  <!-- Eyes -->
   <circle cx="500" cy="730" r="18" fill="#667eea"/>
   <circle cx="580" cy="730" r="18" fill="#667eea"/>
-  <!-- Eye shine -->
   <circle cx="506" cy="724" r="6" fill="white"/>
   <circle cx="586" cy="724" r="6" fill="white"/>
-  <!-- Smile -->
   <path d="M 500 770 Q 540 800 580 770" stroke="#667eea" stroke-width="5" fill="none" stroke-linecap="round"/>
-  <!-- Antenna -->
   <line x1="540" y1="680" x2="540" y2="645" stroke="white" stroke-width="5" stroke-linecap="round"/>
   <circle cx="540" cy="638" r="10" fill="#ffd700"/>
-  <!-- Ears -->
   <rect x="438" y="715" width="22" height="35" rx="8" fill="white"/>
   <rect x="620" y="715" width="22" height="35" rx="8" fill="white"/>
 
-  <!-- Math symbols floating around -->
-  <text x="380" y="660" font-family="Arial, sans-serif" font-size="48" fill="rgba(255,255,255,0.6)" font-weight="bold">+</text>
-  <text x="680" y="700" font-family="Arial, sans-serif" font-size="42" fill="rgba(255,255,255,0.5)" font-weight="bold">×</text>
-  <text x="350" y="830" font-family="Arial, sans-serif" font-size="40" fill="rgba(255,255,255,0.4)" font-weight="bold">÷</text>
-  <text x="710" y="850" font-family="Arial, sans-serif" font-size="44" fill="rgba(255,255,255,0.5)" font-weight="bold">−</text>
-  <text x="400" y="900" font-family="Arial, sans-serif" font-size="36" fill="rgba(255,255,255,0.35)" font-weight="bold">=</text>
-  <text x="660" y="640" font-family="Arial, sans-serif" font-size="38" fill="rgba(255,255,255,0.4)" font-weight="bold">%</text>
+  <!-- Subject symbols floating around -->
+  <text x="370" y="660" font-family="Arial, sans-serif" font-size="44" fill="rgba(255,255,255,0.6)">📐</text>
+  <text x="680" y="690" font-family="Arial, sans-serif" font-size="40" fill="rgba(255,255,255,0.55)">📖</text>
+  <text x="340" y="840" font-family="Arial, sans-serif" font-size="38" fill="rgba(255,255,255,0.45)">🌍</text>
+  <text x="710" y="860" font-family="Arial, sans-serif" font-size="42" fill="rgba(255,255,255,0.5)">✏️</text>
+  <text x="390" y="910" font-family="Arial, sans-serif" font-size="36" fill="rgba(255,255,255,0.4)">🔬</text>
+  <text x="660" y="630" font-family="Arial, sans-serif" font-size="38" fill="rgba(255,255,255,0.45)">🎨</text>
 
   <!-- App name -->
   <text x="540" y="1060" font-family="Arial, sans-serif" font-size="96" fill="white" font-weight="bold" text-anchor="middle">Репетик</text>
 
   <!-- Subtitle -->
-  <text x="540" y="1130" font-family="Arial, sans-serif" font-size="36" fill="rgba(255,255,255,0.8)" text-anchor="middle">AI-репетитор з математики</text>
+  <text x="540" y="1130" font-family="Arial, sans-serif" font-size="36" fill="rgba(255,255,255,0.8)" text-anchor="middle">AI-репетитор для 3 класу</text>
 
   <!-- Tagline -->
   <text x="540" y="1190" font-family="Arial, sans-serif" font-size="28" fill="rgba(255,255,255,0.55)" text-anchor="middle">Вчимося разом — крок за кроком!</text>
